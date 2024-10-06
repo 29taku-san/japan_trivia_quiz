@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress"
 import { Share2, Trophy, RotateCcw } from 'lucide-react'
 import { useLanguage } from '../../hooks/useLanguage';
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
 // Load the affiliate links JSON dynamically
 const fetchAffiliateLinks = async () => {
@@ -40,7 +41,7 @@ export default function QuizResult() {
     if (score >= 8) {
       return {
         title: "Congrats!",
-        message: "You're ready to enjoy Japan like a local!"
+        message: "You&apos;re ready to enjoy Japan like a local!"
       }
     } else if (score >= 5 && score <= 7) {
       return {
@@ -136,9 +137,11 @@ export default function QuizResult() {
                     rel="noopener noreferrer" // セキュリティのために追加
                     className="block p-4 bg-white border rounded-lg shadow hover:shadow-md transition-shadow"
                   >
-                    <img
+                    <Image
                       src={link.image}
                       alt={link.title}
+                      width={500}
+                      height={300}
                       className="w-full h-32 object-cover rounded-t-lg mb-2"
                     />
                     <h4 className="font-semibold mb-1">{link.title}</h4>
