@@ -127,7 +127,7 @@ export default function QuizResult() {
             </div>
             {/* Creator's Favorite Spots Section */}
             <div className="mt-8">
-              <h3 className="text-xl font-semibold mb-4">Creator's Favorite Spots</h3>
+              <h3 className="text-xl font-semibold mb-4">Creator&apos;s Favorite Spots</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {affiliateLinks.map((link, index) => (
                   <a
