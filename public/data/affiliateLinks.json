@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "Fujiya Hotel",
+    "description": "Description of the first favorite spot in Japan.",
+    "url": "https://www.yumotofujiya.jp/",
+    "image": "/images/fujiya.jpg",
+    "category": "Location",
+    "subcategory": "Tokyo"
+  },
+  {
+    "id": 2,
+    "title": "Hoshinoya Kyoto",
+    "description": "Description of the second favorite spot in Japan.",
+    "url": "https://hoshinoresorts.com/ja/hotels/hoshinoyakyoto/",
+    "image": "/images/hoshinoya.jpg",
+    "category": "Location",
+    "subcategory": "Kyoto"
+  },
+  {
+    "id": 3,
+    "title": "Disney",
+    "description": "Description of the third favorite spot in Japan.",
+    "url": "https://www.tokyodisneyresort.jp/#:~:text=%E6%9D%B1%E4%BA%AC%E3%83%87%E3%82%A3%E3%82%BA%E3%83%8B%E3%83%BC%E3%83%AA%E3%82%BE%E3%83%BC",
+    "image": "/images/disney.jpg",
+    "category": "Food",
+    "subcategory": "Sushi"
+  },
+  {
+    "id": 4,
+    "title": "USJ",
+    "description": "Description of the fourth favorite spot in Japan.",
+    "url": "https://www.usj.co.jp/web/ja/jp",
+    "image": "/images/usj.jpg",
+    "category": "Food",
+    "subcategory": "Ramen"
+  }
+]
