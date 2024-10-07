@@ -113,12 +113,17 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
               <>
                 <h3 className="text-xl font-bold mb-4">{currentQuestion.text}</h3>
                 <RadioGroup 
-                  value={selectedAnswer || ''} // 選択された値を設定
+                  value={selectedAnswer || ''} // 選択された値を設定、null の場合は空文字列を設定
                   onValueChange={onValueChange}  // 選択された値を変更する関数を呼び出し
                 >
                   {currentQuestion.options.map((option, index) => (
                     <div key={index} className="flex items-center space-x-2 mb-2">
-                      <RadioGroupItem value={option} id={`option-${index}`} selectedValue={selectedAnswer} onValueChange={onValueChange} />
+                      <RadioGroupItem 
+                        value={option} 
+                        id={`option-${index}`} 
+                        selectedValue={selectedAnswer || ''} // null の場合は空文字列
+                        onValueChange={onValueChange} 
+                      />
                       <Label htmlFor={`option-${index}`} className="text-base cursor-pointer">
                         {option}
                       </Label>
