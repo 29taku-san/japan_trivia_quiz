@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
-import { useLanguage } from '../hooks/useLanguage';
+import { useLanguage } from '@/hooks/useLanguage';
 
 // Load the questions JSON dynamically
-const fetchQuestions = async () => {
+async function fetchQuestions() {
   const response = await fetch('/data/questions.json')
   const data = await response.json()
   return data
