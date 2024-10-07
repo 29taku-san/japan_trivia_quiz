@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { useLanguage } from '../../app/hooks/useLanguage'; // ここを修正
+import { useLanguage } from '../app/hooks/useLanguage'; // ここを修正
 
 
 // Load the questions JSON dynamically
