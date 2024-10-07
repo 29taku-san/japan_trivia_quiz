@@ -10,8 +10,18 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { useLanguage } from '../../../hooks/useLanguage';
 
+// Question type definition
+type Question = {
+  class_level: number;
+  language_code: string;
+  text: string;
+  options: string[];
+  correctAnswer: string;
+  explanation: string;
+};
+
 // Load the questions JSON dynamically
-const fetchQuestions = async () => {
+const fetchQuestions = async (): Promise<Question[]> => {
   const response = await fetch('/data/questions.json');
   const data = await response.json();
   return data;
@@ -26,7 +36,7 @@ const difficultyClassMap: { [key: string]: [number, number] } = {
 };
 
 export default function QuizFlow({ params }: { params: { difficulty: keyof typeof difficultyClassMap } }) {
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
@@ -40,8 +50,8 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
       const [firstClass, secondClass] = difficultyClassMap[params.difficulty];
 
       // Filter questions by class level and language
-      const class1Questions = allQuestions.filter(q => q.class_level === firstClass && q.language_code === lang).slice(0, 5); // 5 questions from class 1
-      const class2Questions = allQuestions.filter(q => q.class_level === secondClass && q.language_code === lang).slice(0, 5); // 5 questions from class 2
+      const class1Questions = allQuestions.filter((q: Question) => q.class_level === firstClass && q.language_code === lang).slice(0, 5); // 5 questions from class 1
+      const class2Questions = allQuestions.filter((q: Question) => q.class_level === secondClass && q.language_code === lang).slice(0, 5); // 5 questions from class 2
 
       // Concatenate class 1 and class 2 questions
       const orderedQuestions = [...class1Questions, ...class2Questions];
