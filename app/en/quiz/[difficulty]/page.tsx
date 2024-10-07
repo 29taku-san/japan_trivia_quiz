@@ -18,14 +18,14 @@ const fetchQuestions = async () => {
 };
 
 // Map difficulty levels to class levels
-const difficultyClassMap = {
+const difficultyClassMap: { [key: string]: [number, number] } = {
   beginner: [1, 2],
   intermediate: [2, 3],
   advanced: [3, 4],
   japanese: [4, 5],
 };
 
-export default function QuizFlow({ params }: { params: { difficulty: string } }) {
+export default function QuizFlow({ params }: { params: { difficulty: keyof typeof difficultyClassMap } }) {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
