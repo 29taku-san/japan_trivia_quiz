@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
-import { useLanguage } from '../../app/hooks/useLanguage';
+import { useLanguage } from async (params:type) => {
+  '../../app/hooks/useLanguage'
+};
 
 
 // Load the questions JSON dynamically
