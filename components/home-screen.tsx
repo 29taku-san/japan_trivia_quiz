@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Globe } from 'lucide-react'
-import { useLanguage } from '@/hooks/useLanguage'
+import { useLanguage } from '../hooks/useLanguage'
 
 export default function HomeScreen() {
   const lang = useLanguage()
