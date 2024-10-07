@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
-import { useLanguage } from '../../hooks/useLanguage';
+import * as useLanguage from '../../app/hooks/useLanguage';
 
 // Load the questions JSON dynamically
 async function fetchQuestions() {
@@ -32,7 +32,7 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
   const [isAnswerChecked, setIsAnswerChecked] = useState(false)
   const [score, setScore] = useState(0)
   const router = useRouter()
-  const lang = useLanguage()
+  const lang = useLanguage.useLanguage()
 
   useEffect(() => {
     const loadQuestions = async () => {
