@@ -10,8 +10,16 @@ import { useLanguage } from '../../hooks/useLanguage';
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
+// Define the type for affiliate link items
+type AffiliateLink = {
+  url: string;
+  image: string;
+  title: string;
+  description: string;
+};
+
 // Load the affiliate links JSON dynamically
-const fetchAffiliateLinks = async () => {
+const fetchAffiliateLinks = async (): Promise<AffiliateLink[]> => {
   const response = await fetch('/data/affiliateLinks.json')
   const data = await response.json()
   return data
@@ -23,7 +31,7 @@ export default function QuizResult() {
   const score = Number(searchParams.get('score'))
   const total = Number(searchParams.get('total'))
 
-  const [affiliateLinks, setAffiliateLinks] = useState([])
+  const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([])
 
   useEffect(() => {
     const loadAffiliateLinks = async () => {
