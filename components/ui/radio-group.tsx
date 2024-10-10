@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 interface RadioGroupProps {
-  children: React.ReactNode;
+  children: ReactNode;
   onValueChange: (value: string) => void;
   value: string | undefined;
 }
@@ -11,8 +11,8 @@ export const RadioGroup: FC<RadioGroupProps> = ({ children, onValueChange, value
     <div role="radiogroup">
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
-          // TypeScriptの型推論のため、子要素にプロパティを追加する型定義を指定します
-          return React.cloneElement(child as React.ReactElement<any>, { onValueChange, selectedValue: value });
+          // 子要素の型推論を強制し、適切なプロパティを渡します
+          return React.cloneElement(child as React.ReactElement<{ onValueChange: (value: string) => void; selectedValue: string | undefined }>, { onValueChange, selectedValue: value });
         }
         return child;
       })}
