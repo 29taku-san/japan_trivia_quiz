@@ -116,7 +116,12 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
                 >
                   {currentQuestion.options.map((option: string, index: number) => (
                     <div key={index} className="flex items-center space-x-2 mb-2">
-                      <RadioGroupItem value={option} id={`option-${index}`} />
+                      <RadioGroupItem 
+                        value={option} 
+                        id={`option-${index}`} 
+                        onValueChange={onValueChange} 
+                        selectedValue={selectedAnswer} 
+                      />
                       <Label htmlFor={`option-${index}`} className="text-base cursor-pointer">
                         {option}
                       </Label>
