@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Share2, Trophy, RotateCcw } from 'lucide-react';
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { Share2, Trophy, RotateCcw } from 'lucide-react'
 import { useLanguage } from '../../hooks/useLanguage';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
 // Define the type for affiliate link items
 type AffiliateLink = {
@@ -18,101 +18,86 @@ type AffiliateLink = {
   description: string;
 };
 
-// Load the affiliate links JSON dynamically with error handling
+// Load the affiliate links JSON dynamically
 const fetchAffiliateLinks = async (): Promise<AffiliateLink[]> => {
   try {
-    const response = await fetch('/data/affiliateLinks.json');
+    const response = await fetch('/data/affiliateLinks.json')
     if (!response.ok) {
-      throw new Error(`Failed to fetch affiliate links: ${response.status}`);
+      throw new Error('Failed to fetch affiliate links');
     }
-    const data = await response.json();
-    return data;
+    const data = await response.json()
+    return data
   } catch (error) {
-    console.error('Error fetching affiliate links:', error);
-    return [];  // Return an empty array in case of error
+    console.error(error);
+    return [];
   }
-};
+}
 
 export default function QuizResult() {
-  const [score, setScore] = useState<number | null>(null);
-  const [total, setTotal] = useState<number | null>(null);
-  const searchParams = useSearchParams();
-  const lang = useLanguage();
+  const searchParams = useSearchParams()
+  const lang = useLanguage()
   
-  const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([]);
+  // Default to 0 if score or total cannot be found
+  const score = Number(searchParams.get('score') || 0)
+  const total = Number(searchParams.get('total') || 20)
+
+  const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([])
 
   useEffect(() => {
     const loadAffiliateLinks = async () => {
-      const links = await fetchAffiliateLinks();
-      // Get 3 random links
-      const shuffledLinks = links.sort(() => 0.5 - Math.random()).slice(0, 3);
-      setAffiliateLinks(shuffledLinks);
-    };
-    loadAffiliateLinks();
-    
-    // Get the score and total from search parameters, if available
-    const scoreParam = searchParams.get('score');
-    const totalParam = searchParams.get('total');
-    
-    if (scoreParam && totalParam) {
-      setScore(Number(scoreParam));
-      setTotal(Number(totalParam));
-    } else {
-      // Handle default values if the query parameters are not available
-      setScore(0);
-      setTotal(1);
+      const links = await fetchAffiliateLinks()
+      // ランダムに3つのリンクを取得
+      const shuffledLinks = links.sort(() => 0.5 - Math.random()).slice(0, 3)
+      setAffiliateLinks(shuffledLinks)
     }
-  }, [searchParams]);
+    loadAffiliateLinks()
+  }, [])
 
-  if (score === null || total === null) {
-    return <div>Loading...</div>;
-  }
-
-  const percentage = (score / total) * 100;
+  const percentage = (total > 0 ? (score / total) * 100 : 0)
 
   const getResultMessage = (score: number) => {
     if (score >= 8) {
       return {
         title: "Congrats!",
         message: "You're ready to enjoy Japan like a local!"
-      };
+      }
     } else if (score >= 5 && score <= 7) {
       return {
         title: "So close!",
         message: "Just a little more to become a Japan master!"
-      };
+      }
     } else {
       return {
         title: "No worries!",
         message: "Your next challenge will make you a Japan expert!"
-      };
+      }
     }
-  };
+  }
 
-  const result = getResultMessage(score);
+  const result = getResultMessage(score)
 
   const handleShare = async () => {
     const shareData = {
       title: "Japan Trivia Quiz Results",
       text: `I just scored ${score}/${total} on the Japan Trivia Quiz! Test your knowledge at the quiz home page:`,
       url: window.location.origin + `/${lang}/home`,
-    };
+    }
 
     try {
       if (navigator.share) {
-        await navigator.share(shareData);
-        console.log("Shared successfully!");
+        await navigator.share(shareData)
+        console.log("Shared successfully!")
       } else {
-        alert("Sharing is not supported on this browser.");
+        alert("Sharing is not supported on this browser.")
       }
     } catch (err) {
-      console.error("Error sharing:", err);
+      console.error("Error sharing:", err)
     }
-  };
+  }
 
   const handleViewCertificate = () => {
-    console.log("Viewing certificate...");
-  };
+    console.log("Viewing certificate...")
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -160,31 +145,27 @@ export default function QuizResult() {
             </div>
             {/* Creator's Favorite Spots Section */}
             <div className="mt-8">
-              <h3 className="text-xl font-semibold mb-4">Creator&apos;s Favorite Spots</h3>
+              <h3 className="text-xl font-semibold mb-4">Creator's Favorite Spots</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {affiliateLinks.length > 0 ? (
-                  affiliateLinks.map((link, index) => (
-                    <a
-                      href={link.url}
-                      key={index}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block p-4 bg-white border rounded-lg shadow hover:shadow-md transition-shadow"
-                    >
-                      <Image
-                        src={link.image}
-                        alt={link.title}
-                        width={500}
-                        height={300}
-                        className="w-full h-32 object-cover rounded-t-lg mb-2"
-                      />
-                      <h4 className="font-semibold mb-1">{link.title}</h4>
-                      <p className="text-sm text-gray-600">{link.description}</p>
-                    </a>
-                  ))
-                ) : (
-                  <p>No affiliate links available at the moment.</p>  // Fallback message
-                )}
+                {affiliateLinks.map((link, index) => (
+                  <a
+                    href={link.url}
+                    key={index}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block p-4 bg-white border rounded-lg shadow hover:shadow-md transition-shadow"
+                  >
+                    <Image
+                      src={link.image}
+                      alt={link.title}
+                      width={500}
+                      height={300}
+                      className="w-full h-32 object-cover rounded-t-lg mb-2"
+                    />
+                    <h4 className="font-semibold mb-1">{link.title}</h4>
+                    <p className="text-sm text-gray-600">{link.description}</p>
+                  </a>
+                ))}
               </div>
             </div>
 
@@ -208,5 +189,5 @@ export default function QuizResult() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
