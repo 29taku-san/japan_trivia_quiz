@@ -11,7 +11,8 @@ export const RadioGroup: FC<RadioGroupProps> = ({ children, onValueChange, value
     <div role="radiogroup">
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child, { onValueChange, selectedValue: value });
+          // TypeScriptの型推論のため、子要素にプロパティを追加する型定義を指定します
+          return React.cloneElement(child as React.ReactElement<any>, { onValueChange, selectedValue: value });
         }
         return child;
       })}
