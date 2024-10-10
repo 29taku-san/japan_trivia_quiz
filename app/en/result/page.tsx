@@ -26,7 +26,7 @@ const fetchAffiliateLinks = async (): Promise<AffiliateLink[]> => {
     if (!response.ok) {
       throw new Error('Failed to fetch affiliate links');
     }
-    const data = await response.json()
+    const data: AffiliateLink[] = await response.json()
     return data
   } catch (error) {
     console.error(error);
@@ -47,50 +47,6 @@ export default function QuizResult() {
     }
     loadAffiliateLinks()
   }, [])
-
-  const percentage = (total: number, score: number) => (total > 0 ? (score / total) * 100 : 0)
-
-  const getResultMessage = (score: number) => {
-    if (score >= 8) {
-      return {
-        title: "Congrats!",
-        message: "You&apos;re ready to enjoy Japan like a local!"
-      }
-    } else if (score >= 5 && score <= 7) {
-      return {
-        title: "So close!",
-        message: "Just a little more to become a Japan master!"
-      }
-    } else {
-      return {
-        title: "No worries!",
-        message: "Your next challenge will make you a Japan expert!"
-      }
-    }
-  }
-
-  const handleShare = async (score: number, total: number) => {
-    const shareData = {
-      title: "Japan Trivia Quiz Results",
-      text: `I just scored ${score}/${total} on the Japan Trivia Quiz! Test your knowledge at the quiz home page:`,
-      url: window.location.origin + `/${lang}/home`,
-    }
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData)
-        console.log("Shared successfully!")
-      } else {
-        alert("Sharing is not supported on this browser.")
-      }
-    } catch (err) {
-      console.error("Error sharing:", err)
-    }
-  }
-
-  const handleViewCertificate = () => {
-    console.log("Viewing certificate...")
-  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -115,10 +71,16 @@ export default function QuizResult() {
   )
 }
 
-function QuizResultContent({ affiliateLinks, handleShare, handleViewCertificate }) {
+interface QuizResultContentProps {
+  affiliateLinks: AffiliateLink[];
+  handleShare: (score: number, total: number) => Promise<void>;
+  handleViewCertificate: () => void;
+}
+
+function QuizResultContent({ affiliateLinks, handleShare, handleViewCertificate }: QuizResultContentProps) {
   const searchParams = useSearchParams();
-  const score = Number(searchParams.get('score') || 0);
-  const total = Number(searchParams.get('total') || 20);
+  const score: number = Number(searchParams.get('score')) || 0;
+  const total: number = Number(searchParams.get('total')) || 20;
 
   const percentageValue = (score / total) * 100;
   const result = getResultMessage(score);
@@ -194,4 +156,47 @@ function QuizResultContent({ affiliateLinks, handleShare, handleViewCertificate 
       </CardFooter>
     </Card>
   );
+}
+
+function getResultMessage(score: number) {
+  if (score >= 8) {
+    return {
+      title: "Congrats!",
+      message: "You're ready to enjoy Japan like a local!"
+    }
+  } else if (score >= 5 && score <= 7) {
+    return {
+      title: "So close!",
+      message: "Just a little more to become a Japan master!"
+    }
+  } else {
+    return {
+      title: "No worries!",
+      message: "Your next challenge will make you a Japan expert!"
+    }
+  }
+}
+
+async function handleShare(score: number, total: number) {
+  const lang = useLanguage();
+  const shareData = {
+    title: "Japan Trivia Quiz Results",
+    text: `I just scored ${score}/${total} on the Japan Trivia Quiz! Test your knowledge at the quiz home page:`,
+    url: window.location.origin + `/${lang}/home`,
+  }
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData)
+      console.log("Shared successfully!")
+    } else {
+      alert("Sharing is not supported on this browser.")
+    }
+  } catch (err) {
+    console.error("Error sharing:", err)
+  }
+}
+
+function handleViewCertificate() {
+  console.log("Viewing certificate...")
 }
