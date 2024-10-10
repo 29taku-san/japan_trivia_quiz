@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { useLanguage } from '../app/hooks/useLanguage'; // ここを修正
-
+import { useLanguage } from '../app/hooks/useLanguage'; // 修正済み
 
 // Load the questions JSON dynamically
 async function fetchQuestions() {
@@ -19,12 +18,12 @@ async function fetchQuestions() {
 }
 
 // Map difficulty levels to class levels
-const difficultyClassMap = {
+const difficultyClassMap: { [key: string]: [number, number] } = {
   beginner: [1, 2],
   intermediate: [2, 3],
   advanced: [3, 4],
   japanese: [4, 5],
-}
+};
 
 export default function QuizFlow({ params }: { params: { difficulty: string } }) {
   const [questions, setQuestions] = useState([]);
@@ -33,15 +32,15 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [score, setScore] = useState(0);
   const router = useRouter();
-  const lang = useLanguage();  // 修正
+  const lang = useLanguage();
 
   useEffect(() => {
     const loadQuestions = async () => {
       const allQuestions = await fetchQuestions();
-      const [firstClass, secondClass] = difficultyClassMap[params.difficulty];
+      const [firstClass, secondClass] = difficultyClassMap[params.difficulty as keyof typeof difficultyClassMap];
 
       // Filter questions based on class levels
-      const filteredQuestions = allQuestions.filter(q => 
+      const filteredQuestions = allQuestions.filter((q: any) => 
         q.class_level === firstClass || q.class_level === secondClass
       ).slice(0, 20); // Only take 20 questions (10 from each class)
 
@@ -71,7 +70,6 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
     }
   };
 
-  // Define onValueChange function here
   const onValueChange = (newValue: string) => {
     setSelectedAnswer(newValue);
   };
@@ -106,7 +104,7 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
                   value={selectedAnswer || ''} // 選択された値を設定
                   onValueChange={onValueChange}  // 選択された値を変更する関数を呼び出し
                 >
-                  {currentQuestion.options.map((option, index) => (
+                  {currentQuestion.options.map((option: string, index: number) => (
                     <div key={index} className="flex items-center space-x-2 mb-2">
                       <RadioGroupItem value={option} id={`option-${index}`} />
                       <Label htmlFor={`option-${index}`} className="text-base cursor-pointer">
@@ -127,7 +125,7 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
                 </p>
                 <div className="p-4 bg-blue-50 rounded-md">
                   <h4 className="font-bold mb-2">Answer Breakdown:</h4>
-                  {currentQuestion.options.map((option, index) => (
+                  {currentQuestion.options.map((option: string, index: number) => (
                     <p key={index} className={`mb-1 ${
                       option === currentQuestion.correctAnswer 
                         ? 'text-green-600 font-bold' 
@@ -170,5 +168,5 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
         </div>
       </footer>
     </div>
-  )
+  );
 }
