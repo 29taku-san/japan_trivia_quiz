@@ -1,25 +1,3 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import { useLanguage } from '../app/hooks/useLanguage'; // 修正済み
-
-// Questionの型を定義
-interface Question {
-  text: string;
-  options: string[];
-  correctAnswer: string;
-  explanation: string;
-  class_level: number;
-  language_code: string;
-}
-
 // Load the questions JSON dynamically
 async function fetchQuestions(): Promise<Question[]> {
   const response = await fetch('/data/questions.json');
@@ -27,13 +5,14 @@ async function fetchQuestions(): Promise<Question[]> {
   return data as Question[];
 }
 
-// Map difficulty levels to class levels
-const difficultyClassMap: { [key: string]: [number, number] } = {
-  beginner: [1, 2],
-  intermediate: [2, 3],
-  advanced: [3, 4],
-  japanese: [4, 5],
-};
+// Function to shuffle an array (Fisher-Yates shuffle)
+function shuffleArray<T>(array: T[]): T[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
 
 export default function QuizFlow({ params }: { params: { difficulty: string } }) {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -49,12 +28,13 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
       const allQuestions = await fetchQuestions();
       const [firstClass, secondClass] = difficultyClassMap[params.difficulty as keyof typeof difficultyClassMap];
 
-      // Filter questions based on class levels
-      const filteredQuestions = allQuestions.filter(q => 
-        q.class_level === firstClass || q.class_level === secondClass
-      ).slice(0, 20); // Only take 20 questions (10 from each class)
+      // Filter questions based on class levels and shuffle them
+      const filteredQuestions = allQuestions
+        .filter(q => q.class_level === firstClass || q.class_level === secondClass);
 
-      setQuestions(filteredQuestions);
+      const shuffledQuestions = shuffleArray(filteredQuestions).slice(0, 20); // Shuffle and take 20 questions
+
+      setQuestions(shuffledQuestions);
     };
     loadQuestions();
   }, [params.difficulty]);
