@@ -18,12 +18,20 @@ type AffiliateLink = {
   description: string;
 };
 
-// Load the affiliate links JSON dynamically
+// Load the affiliate links JSON dynamically with error handling
 const fetchAffiliateLinks = async (): Promise<AffiliateLink[]> => {
-  const response = await fetch('/data/affiliateLinks.json')
-  const data = await response.json()
-  return data
-}
+  try {
+    const response = await fetch('/data/affiliateLinks.json');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch affiliate links: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching affiliate links:', error);
+    return [];  // Return an empty array in case of error
+  }
+};
 
 export default function QuizResult() {
   const searchParams = useSearchParams()
@@ -36,7 +44,7 @@ export default function QuizResult() {
   useEffect(() => {
     const loadAffiliateLinks = async () => {
       const links = await fetchAffiliateLinks()
-      // ランダムに3つのリンクを取得
+      // Get 3 random links
       const shuffledLinks = links.sort(() => 0.5 - Math.random()).slice(0, 3)
       setAffiliateLinks(shuffledLinks)
     }
@@ -49,7 +57,7 @@ export default function QuizResult() {
     if (score >= 8) {
       return {
         title: "Congrats!",
-        message: "You&apos;re ready to enjoy Japan like a local!"
+        message: "You're ready to enjoy Japan like a local!"
       }
     } else if (score >= 5 && score <= 7) {
       return {
@@ -137,25 +145,29 @@ export default function QuizResult() {
             <div className="mt-8">
               <h3 className="text-xl font-semibold mb-4">Creator&apos;s Favorite Spots</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {affiliateLinks.map((link, index) => (
-                  <a
-                    href={link.url}
-                    key={index}
-                    target="_blank" // 新しいタブでリンクを開く
-                    rel="noopener noreferrer" // セキュリティのために追加
-                    className="block p-4 bg-white border rounded-lg shadow hover:shadow-md transition-shadow"
-                  >
-                    <Image
-                      src={link.image}
-                      alt={link.title}
-                      width={500}
-                      height={300}
-                      className="w-full h-32 object-cover rounded-t-lg mb-2"
-                    />
-                    <h4 className="font-semibold mb-1">{link.title}</h4>
-                    <p className="text-sm text-gray-600">{link.description}</p>
-                  </a>
-                ))}
+                {affiliateLinks.length > 0 ? (
+                  affiliateLinks.map((link, index) => (
+                    <a
+                      href={link.url}
+                      key={index}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-4 bg-white border rounded-lg shadow hover:shadow-md transition-shadow"
+                    >
+                      <Image
+                        src={link.image}
+                        alt={link.title}
+                        width={500}
+                        height={300}
+                        className="w-full h-32 object-cover rounded-t-lg mb-2"
+                      />
+                      <h4 className="font-semibold mb-1">{link.title}</h4>
+                      <p className="text-sm text-gray-600">{link.description}</p>
+                    </a>
+                  ))
+                ) : (
+                  <p>No affiliate links available at the moment.</p>  // Fallback message
+                )}
               </div>
             </div>
 
