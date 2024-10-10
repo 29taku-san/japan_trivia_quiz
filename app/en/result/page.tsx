@@ -96,7 +96,7 @@ function QuizResultContent({ affiliateLinks, handleShare }: QuizResultContentPro
               <Share2 className="w-4 h-4 mr-2" />
               Share
             </Button>
-            <Link href={`/difficulty`} passHref>
+            <Link href={/difficulty} passHref>
               <Button variant="outline" size="sm">
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Retake Quiz
@@ -104,7 +104,7 @@ function QuizResultContent({ affiliateLinks, handleShare }: QuizResultContentPro
             </Link>
           </div>
         </div>
-        <div className={`text-center p-4 rounded-md ${score >= 8 ? 'bg-green-100 text-green-800' : score >= 5 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+        <div className={text-center p-4 rounded-md ${score >= 8 ? 'bg-green-100 text-green-800' : score >= 5 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}}>
           <p className="text-2xl font-bold mb-2">
             {result.title}
           </p>
@@ -137,10 +137,10 @@ function QuizResultContent({ affiliateLinks, handleShare }: QuizResultContentPro
       </CardContent>
       <CardFooter className="bg-gray-50 p-6">
         <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4">
-          <Link href={`/difficulty`} passHref className="w-full sm:w-auto">
+          <Link href={/difficulty} passHref className="w-full sm:w-auto">
             <Button variant="outline" className="w-full sm:w-auto">Choose Another Difficulty</Button>
           </Link>
-          <Link href={`/home`} passHref className="w-full sm:w-auto">
+          <Link href={/home} passHref className="w-full sm:w-auto">
             <Button className="w-full sm:w-auto">Back to Home</Button>
           </Link>
         </div>
@@ -171,8 +171,8 @@ function getResultMessage(score: number) {
 async function handleShare(score: number, total: number) {
   const shareData = {
     title: "Japan Trivia Quiz Results",
-    text: `I just scored ${score}/${total} on the Japan Trivia Quiz! Test your knowledge at the quiz home page:`,
-    url: window.location.origin + `/home`,
+    text: I just scored ${score}/${total} on the Japan Trivia Quiz! Test your knowledge at the quiz home page:,
+    url: window.location.origin + /home,
   }
 
   try {

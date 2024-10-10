@@ -1,3 +1,15 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import { useLanguage } from '../app/hooks/useLanguage'; // 修正済み
+
 // Load the questions JSON dynamically
 async function fetchQuestions(): Promise<Question[]> {
   const response = await fetch('/data/questions.json');
