@@ -10,11 +10,21 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { useLanguage } from '../app/hooks/useLanguage'; // 修正済み
 
+// Questionの型を定義
+interface Question {
+  text: string;
+  options: string[];
+  correctAnswer: string;
+  explanation: string;
+  class_level: number;
+  language_code: string;
+}
+
 // Load the questions JSON dynamically
-async function fetchQuestions() {
-  const response = await fetch('/data/questions.json')
-  const data = await response.json()
-  return data
+async function fetchQuestions(): Promise<Question[]> {
+  const response = await fetch('/data/questions.json');
+  const data = await response.json();
+  return data as Question[];
 }
 
 // Map difficulty levels to class levels
@@ -26,7 +36,7 @@ const difficultyClassMap: { [key: string]: [number, number] } = {
 };
 
 export default function QuizFlow({ params }: { params: { difficulty: string } }) {
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
@@ -40,7 +50,7 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
       const [firstClass, secondClass] = difficultyClassMap[params.difficulty as keyof typeof difficultyClassMap];
 
       // Filter questions based on class levels
-      const filteredQuestions = allQuestions.filter((q: any) => 
+      const filteredQuestions = allQuestions.filter(q => 
         q.class_level === firstClass || q.class_level === secondClass
       ).slice(0, 20); // Only take 20 questions (10 from each class)
 
