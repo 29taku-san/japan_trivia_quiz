@@ -8,7 +8,17 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { useLanguage } from '../app/hooks/useLanguage'; // 修正済み
+import { useLanguage } from '../app/hooks/useLanguage';
+
+// Question型の定義
+interface Question {
+  text: string;
+  options: string[];
+  correctAnswer: string;
+  explanation: string;
+  class_level: number;
+  language_code: string;
+}
 
 // Load the questions JSON dynamically
 async function fetchQuestions(): Promise<Question[]> {
