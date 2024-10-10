@@ -27,57 +27,57 @@ const difficultyClassMap = {
 }
 
 export default function QuizFlow({ params }: { params: { difficulty: string } }) {
-  const [questions, setQuestions] = useState([])
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
-  const [isAnswerChecked, setIsAnswerChecked] = useState(false)
-  const [score, setScore] = useState(0)
-  const router = useRouter()
-  const lang = useLanguage.useLanguage()
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [isAnswerChecked, setIsAnswerChecked] = useState(false);
+  const [score, setScore] = useState(0);
+  const router = useRouter();
+  const lang = useLanguage();  // 修正
 
   useEffect(() => {
     const loadQuestions = async () => {
-      const allQuestions = await fetchQuestions()
-      const [firstClass, secondClass] = difficultyClassMap[params.difficulty]
+      const allQuestions = await fetchQuestions();
+      const [firstClass, secondClass] = difficultyClassMap[params.difficulty];
 
       // Filter questions based on class levels
       const filteredQuestions = allQuestions.filter(q => 
         q.class_level === firstClass || q.class_level === secondClass
-      ).slice(0, 20) // Only take 20 questions (10 from each class)
+      ).slice(0, 20); // Only take 20 questions (10 from each class)
 
-      setQuestions(filteredQuestions)
-    }
-    loadQuestions()
-  }, [params.difficulty])
+      setQuestions(filteredQuestions);
+    };
+    loadQuestions();
+  }, [params.difficulty]);
 
-  const currentQuestion = questions[currentQuestionIndex]
-  const totalQuestions = questions.length
+  const currentQuestion = questions[currentQuestionIndex];
+  const totalQuestions = questions.length;
 
   const handleCheckAnswer = () => {
-    setIsAnswerChecked(true)
+    setIsAnswerChecked(true);
     if (selectedAnswer === currentQuestion.correctAnswer) {
-      setScore(score + 1)
+      setScore(score + 1);
     }
-  }
+  };
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < totalQuestions - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1)
-      setSelectedAnswer(null)
-      setIsAnswerChecked(false)
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelectedAnswer(null);
+      setIsAnswerChecked(false);
     } else {
       // Quiz finished - navigate to results page
-      router.push(`/${lang}/result?score=${score}&total=${totalQuestions}`)
+      router.push(`/${lang}/result?score=${score}&total=${totalQuestions}`);
     }
-  }
+  };
 
   // Define onValueChange function here
   const onValueChange = (newValue: string) => {
-    setSelectedAnswer(newValue)
-  }
+    setSelectedAnswer(newValue);
+  };
 
   if (questions.length === 0) {
-    return <p>Loading questions...</p>
+    return <p>Loading questions...</p>;
   }
 
   return (
