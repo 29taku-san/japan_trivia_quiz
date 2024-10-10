@@ -120,7 +120,7 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
                         value={option} 
                         id={`option-${index}`} 
                         onValueChange={onValueChange} 
-                        selectedValue={selectedAnswer} 
+                        selectedValue={selectedAnswer || ''} // nullを空文字列に変換
                       />
                       <Label htmlFor={`option-${index}`} className="text-base cursor-pointer">
                         {option}
