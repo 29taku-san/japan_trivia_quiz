@@ -34,11 +34,11 @@ const fetchAffiliateLinks = async (): Promise<AffiliateLink[]> => {
 };
 
 export default function QuizResult() {
+  const [score, setScore] = useState<number | null>(null);
+  const [total, setTotal] = useState<number | null>(null);
   const searchParams = useSearchParams();
   const lang = useLanguage();
-  const score = Number(searchParams.get('score'));
-  const total = Number(searchParams.get('total'));
-
+  
   const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([]);
 
   useEffect(() => {
@@ -49,7 +49,24 @@ export default function QuizResult() {
       setAffiliateLinks(shuffledLinks);
     };
     loadAffiliateLinks();
-  }, []);
+    
+    // Get the score and total from search parameters, if available
+    const scoreParam = searchParams.get('score');
+    const totalParam = searchParams.get('total');
+    
+    if (scoreParam && totalParam) {
+      setScore(Number(scoreParam));
+      setTotal(Number(totalParam));
+    } else {
+      // Handle default values if the query parameters are not available
+      setScore(0);
+      setTotal(1);
+    }
+  }, [searchParams]);
+
+  if (score === null || total === null) {
+    return <div>Loading...</div>;
+  }
 
   const percentage = (score / total) * 100;
 
