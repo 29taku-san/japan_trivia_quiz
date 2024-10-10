@@ -20,6 +20,14 @@ interface Question {
   language_code: string;
 }
 
+// クイズの難易度とクラスレベルをマッピングするオブジェクト
+const difficultyClassMap: { [key: string]: [number, number] } = {
+  beginner: [1, 2],
+  intermediate: [2, 3],
+  advanced: [3, 4],
+  japanese: [4, 5],
+};
+
 // Load the questions JSON dynamically
 async function fetchQuestions(): Promise<Question[]> {
   const response = await fetch('/data/questions.json');
