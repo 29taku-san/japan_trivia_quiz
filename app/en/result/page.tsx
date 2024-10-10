@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { Share2, Trophy, RotateCcw } from 'lucide-react'
+import { Share2, RotateCcw } from 'lucide-react' // Trophyアイコン削除
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
@@ -56,7 +56,7 @@ export default function QuizResult() {
 
       <main className="flex-grow container mx-auto px-4 py-8">
         <Suspense fallback={<div>Loading...</div>}>
-          <QuizResultContent affiliateLinks={affiliateLinks} handleShare={handleShare} handleViewCertificate={handleViewCertificate} />
+          <QuizResultContent affiliateLinks={affiliateLinks} handleShare={handleShare} />
         </Suspense>
       </main>
 
@@ -72,10 +72,9 @@ export default function QuizResult() {
 interface QuizResultContentProps {
   affiliateLinks: AffiliateLink[];
   handleShare: (score: number, total: number) => Promise<void>;
-  handleViewCertificate: () => void;
 }
 
-function QuizResultContent({ affiliateLinks, handleShare, handleViewCertificate }: QuizResultContentProps) {
+function QuizResultContent({ affiliateLinks, handleShare }: QuizResultContentProps) {
   const searchParams = useSearchParams();
   const score: number = Number(searchParams.get('score')) || 0;
   const total: number = Number(searchParams.get('total')) || 20;
@@ -97,12 +96,6 @@ function QuizResultContent({ affiliateLinks, handleShare, handleViewCertificate 
               <Share2 className="w-4 h-4 mr-2" />
               Share
             </Button>
-            {score >= 8 && (
-              <Button variant="outline" size="sm" onClick={handleViewCertificate}>
-                <Trophy className="w-4 h-4 mr-2" />
-                View Certificate
-              </Button>
-            )}
             <Link href={`/difficulty`} passHref>
               <Button variant="outline" size="sm">
                 <RotateCcw className="w-4 h-4 mr-2" />
@@ -192,8 +185,4 @@ async function handleShare(score: number, total: number) {
   } catch (err) {
     console.error("Error sharing:", err)
   }
-}
-
-function handleViewCertificate() {
-  console.log("Viewing certificate...")
 }
