@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { Share2, Trophy, RotateCcw } from 'lucide-react'
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Share2, Trophy, RotateCcw } from 'lucide-react';
 import { useLanguage } from '../../hooks/useLanguage';
-import { useEffect, useState } from 'react'
-import Image from 'next/image'
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 // Define the type for affiliate link items
 type AffiliateLink = {
@@ -34,68 +34,68 @@ const fetchAffiliateLinks = async (): Promise<AffiliateLink[]> => {
 };
 
 export default function QuizResult() {
-  const searchParams = useSearchParams()
-  const lang = useLanguage()
-  const score = Number(searchParams.get('score'))
-  const total = Number(searchParams.get('total'))
+  const searchParams = useSearchParams();
+  const lang = useLanguage();
+  const score = Number(searchParams.get('score'));
+  const total = Number(searchParams.get('total'));
 
-  const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([])
+  const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([]);
 
   useEffect(() => {
     const loadAffiliateLinks = async () => {
-      const links = await fetchAffiliateLinks()
+      const links = await fetchAffiliateLinks();
       // Get 3 random links
-      const shuffledLinks = links.sort(() => 0.5 - Math.random()).slice(0, 3)
-      setAffiliateLinks(shuffledLinks)
-    }
-    loadAffiliateLinks()
-  }, [])
+      const shuffledLinks = links.sort(() => 0.5 - Math.random()).slice(0, 3);
+      setAffiliateLinks(shuffledLinks);
+    };
+    loadAffiliateLinks();
+  }, []);
 
-  const percentage = (score / total) * 100
+  const percentage = (score / total) * 100;
 
   const getResultMessage = (score: number) => {
     if (score >= 8) {
       return {
         title: "Congrats!",
         message: "You're ready to enjoy Japan like a local!"
-      }
+      };
     } else if (score >= 5 && score <= 7) {
       return {
         title: "So close!",
         message: "Just a little more to become a Japan master!"
-      }
+      };
     } else {
       return {
         title: "No worries!",
         message: "Your next challenge will make you a Japan expert!"
-      }
+      };
     }
-  }
+  };
 
-  const result = getResultMessage(score)
+  const result = getResultMessage(score);
 
   const handleShare = async () => {
     const shareData = {
       title: "Japan Trivia Quiz Results",
       text: `I just scored ${score}/${total} on the Japan Trivia Quiz! Test your knowledge at the quiz home page:`,
       url: window.location.origin + `/${lang}/home`,
-    }
+    };
 
     try {
       if (navigator.share) {
-        await navigator.share(shareData)
-        console.log("Shared successfully!")
+        await navigator.share(shareData);
+        console.log("Shared successfully!");
       } else {
-        alert("Sharing is not supported on this browser.")
+        alert("Sharing is not supported on this browser.");
       }
     } catch (err) {
-      console.error("Error sharing:", err)
+      console.error("Error sharing:", err);
     }
-  }
+  };
 
   const handleViewCertificate = () => {
-    console.log("Viewing certificate...")
-  }
+    console.log("Viewing certificate...");
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -191,5 +191,5 @@ export default function QuizResult() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
