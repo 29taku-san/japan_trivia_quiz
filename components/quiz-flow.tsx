@@ -58,16 +58,18 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
       const allQuestions = await fetchQuestions();
       const [firstClass, secondClass] = difficultyClassMap[params.difficulty as keyof typeof difficultyClassMap];
 
-      // Filter questions based on class levels and shuffle them
-      const filteredQuestions = allQuestions
-        .filter(q => q.class_level === firstClass || q.class_level === secondClass);
+      // クラスレベルと言語でフィルタリングした上でシャッフルして抽出
+      const filteredQuestions = shuffleArray(allQuestions
+        .filter(q => (q.class_level === firstClass || q.class_level === secondClass) && q.language_code === lang)
+      );
 
-      const shuffledQuestions = shuffleArray(filteredQuestions).slice(0, 20); // Shuffle and take 20 questions
+      // シャッフルした後、ランダムに20問を選択
+      const selectedQuestions = filteredQuestions.slice(0, 20);
 
-      setQuestions(shuffledQuestions);
+      setQuestions(selectedQuestions);
     };
     loadQuestions();
-  }, [params.difficulty]);
+  }, [params.difficulty, lang]);
 
   const currentQuestion = questions[currentQuestionIndex];
   const totalQuestions = questions.length;
