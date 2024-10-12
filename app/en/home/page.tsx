@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Globe } from 'lucide-react'
 import { useLanguage } from '../../hooks/useLanguage';
 
-
 export default function HomeScreen() {
   const lang = useLanguage()
 
@@ -41,7 +40,7 @@ export default function HomeScreen() {
 
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Quizzes by Topic</h2>
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-2 gap-4"> {/* ここを修正して2列にしています */}
           <Card className="bg-[url('/images/Coming_Soon2.png')] bg-cover bg-center overflow-hidden">
             <CardContent className="p-4 sm:p-6 h-[200px] sm:h-[300px] flex items-end">
               <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Places</h3>
