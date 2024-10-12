@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { Share2, RotateCcw } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { useLanguage } from '../../../hooks/useLanguage' // 言語を取得するためのフック
 
 // Define the type for affiliate link items
 type AffiliateLink = {
@@ -35,6 +36,7 @@ const fetchAffiliateLinks = async (): Promise<AffiliateLink[]> => {
 
 export default function QuizResult() {
   const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([])
+  const lang = useLanguage(); // 現在の言語を取得
 
   useEffect(() => {
     const loadAffiliateLinks = async () => {
@@ -78,6 +80,7 @@ function QuizResultContent({ affiliateLinks, handleShare }: QuizResultContentPro
   const searchParams = useSearchParams();
   const score: number = Number(searchParams.get('score')) || 0;
   const total: number = Number(searchParams.get('total')) || 20;
+  const lang = useLanguage(); // 現在の言語を取得
 
   const percentageValue = (score / total) * 100;
   const result = getResultMessage(score);
@@ -96,7 +99,7 @@ function QuizResultContent({ affiliateLinks, handleShare }: QuizResultContentPro
               <Share2 className="w-4 h-4 mr-2" />
               Share
             </Button>
-            <Link href="/difficulty" passHref>
+            <Link href={`/${lang}/difficulty`} passHref>
               <Button variant="outline" size="sm">
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Retake Quiz
@@ -137,10 +140,10 @@ function QuizResultContent({ affiliateLinks, handleShare }: QuizResultContentPro
       </CardContent>
       <CardFooter className="bg-gray-50 p-6">
         <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4">
-          <Link href="/difficulty" passHref className="w-full sm:w-auto">
+          <Link href={`/${lang}/difficulty`} passHref className="w-full sm:w-auto">
             <Button variant="outline" className="w-full sm:w-auto">Choose Another Difficulty</Button>
           </Link>
-          <Link href="/home" passHref className="w-full sm:w-auto">
+          <Link href={`/${lang}/home`} passHref className="w-full sm:w-auto">
             <Button className="w-full sm:w-auto">Back to Home</Button>
           </Link>
         </div>
@@ -172,7 +175,7 @@ async function handleShare(score: number, total: number) {
   const shareData = {
     title: "Japan Trivia Quiz Results",
     text: `I just scored ${score}/${total} on the Japan Trivia Quiz! Test your knowledge at the quiz home page:`,
-    url: window.location.origin + "/home",
+    url: window.location.origin + `/${useLanguage()}/home`, // 動的に言語を使用
   }
 
   try {
