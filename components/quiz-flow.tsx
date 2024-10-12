@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { useLanguage } from '../app/hooks/useLanguage';
+import { useLanguage } from '../app/hooks/useLanguage'; // 修正済み
 
-// Question型の定義
+// Questionの型を定義
 interface Question {
   text: string;
   options: string[];
@@ -19,14 +19,6 @@ interface Question {
   class_level: number;
   language_code: string;
 }
-
-// クイズの難易度とクラスレベルをマッピングするオブジェクト
-const difficultyClassMap: { [key: string]: [number, number] } = {
-  beginner: [1, 2],
-  intermediate: [2, 3],
-  advanced: [3, 4],
-  japanese: [4, 5],
-};
 
 // Load the questions JSON dynamically
 async function fetchQuestions(): Promise<Question[]> {
@@ -44,6 +36,14 @@ function shuffleArray<T>(array: T[]): T[] {
   return array;
 }
 
+// 難易度に対応するクラスのマッピング
+const difficultyClassMap: { [key: string]: [number, number] } = {
+  beginner: [1, 2],
+  intermediate: [2, 3],
+  advanced: [3, 4],
+  japanese: [4, 5],
+};
+
 export default function QuizFlow({ params }: { params: { difficulty: string } }) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -58,15 +58,21 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
       const allQuestions = await fetchQuestions();
       const [firstClass, secondClass] = difficultyClassMap[params.difficulty as keyof typeof difficultyClassMap];
 
-      // クラスレベルと言語でフィルタリングした上でシャッフルして抽出
-      const filteredQuestions = shuffleArray(allQuestions
-        .filter(q => (q.class_level === firstClass || q.class_level === secondClass) && q.language_code === lang)
+      // Filter questions based on class levels and language code
+      const filteredQuestions = allQuestions.filter(q => 
+        (q.class_level === firstClass || q.class_level === secondClass) && q.language_code === lang
       );
 
-      // シャッフルした後、ランダムに20問を選択
-      const selectedQuestions = filteredQuestions.slice(0, 20);
+      // ログ出力：フィルタリング後の問題セットを確認
+      console.log('Filtered Questions:', filteredQuestions);
 
-      setQuestions(selectedQuestions);
+      // Shuffle the filtered questions and take 10 questions
+      const shuffledQuestions = shuffleArray(filteredQuestions).slice(0, 10);
+
+      // ログ出力：シャッフル後の問題セットを確認
+      console.log('Shuffled Questions:', shuffledQuestions);
+
+      setQuestions(shuffledQuestions);
     };
     loadQuestions();
   }, [params.difficulty, lang]);
