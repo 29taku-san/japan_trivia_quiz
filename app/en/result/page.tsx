@@ -58,7 +58,7 @@ export default function QuizResult() {
 
       <main className="flex-grow container mx-auto px-4 py-8">
         <Suspense fallback={<div>Loading...</div>}>
-          <QuizResultContent affiliateLinks={affiliateLinks} handleShare={handleShare} />
+          <QuizResultContent affiliateLinks={affiliateLinks} handleShare={handleShare} lang={lang} />
         </Suspense>
       </main>
 
@@ -73,14 +73,14 @@ export default function QuizResult() {
 
 interface QuizResultContentProps {
   affiliateLinks: AffiliateLink[];
-  handleShare: (score: number, total: number) => Promise<void>;
+  handleShare: (score: number, total: number, lang: string) => Promise<void>;
+  lang: string;
 }
 
-function QuizResultContent({ affiliateLinks, handleShare }: QuizResultContentProps) {
+function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultContentProps) {
   const searchParams = useSearchParams();
   const score: number = Number(searchParams.get('score')) || 0;
   const total: number = Number(searchParams.get('total')) || 20;
-  const lang = useLanguage(); // 現在の言語を取得
 
   const percentageValue = (score / total) * 100;
   const result = getResultMessage(score);
@@ -95,7 +95,7 @@ function QuizResultContent({ affiliateLinks, handleShare }: QuizResultContentPro
             Your Score: <span className="font-bold">{score}</span> out of {total}
           </p>
           <div className="flex justify-center mt-4 space-x-4">
-            <Button variant="outline" size="sm" onClick={() => handleShare(score, total)}>
+            <Button variant="outline" size="sm" onClick={() => handleShare(score, total, lang)}>
               <Share2 className="w-4 h-4 mr-2" />
               Share
             </Button>
@@ -171,11 +171,11 @@ function getResultMessage(score: number) {
   }
 }
 
-async function handleShare(score: number, total: number) {
+async function handleShare(score: number, total: number, lang: string) {
   const shareData = {
     title: "Japan Trivia Quiz Results",
     text: `I just scored ${score}/${total} on the Japan Trivia Quiz! Test your knowledge at the quiz home page:`,
-    url: window.location.origin + `/${useLanguage()}/home`, // 動的に言語を使用
+    url: window.location.origin + `/${lang}/home`,
   }
 
   try {
