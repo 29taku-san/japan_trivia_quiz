@@ -27,6 +27,15 @@ const fetchQuestions = async (): Promise<Question[]> => {
   return data;
 };
 
+// Function to shuffle an array (Fisher-Yates shuffle)
+const shuffleArray = <T,>(array: T[]): T[] => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 // Map difficulty levels to class levels
 const difficultyClassMap: { [key: string]: [number, number] } = {
   beginner: [1, 2],
@@ -50,11 +59,15 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
       const [firstClass, secondClass] = difficultyClassMap[params.difficulty];
 
       // Filter questions by class level and language
-      const class1Questions = allQuestions.filter((q: Question) => q.class_level === firstClass && q.language_code === lang).slice(0, 5); // 5 questions from class 1
-      const class2Questions = allQuestions.filter((q: Question) => q.class_level === secondClass && q.language_code === lang).slice(0, 5); // 5 questions from class 2
+      const class1Questions = allQuestions.filter((q: Question) => q.class_level === firstClass && q.language_code === lang);
+      const class2Questions = allQuestions.filter((q: Question) => q.class_level === secondClass && q.language_code === lang);
+
+      // Shuffle the questions
+      const shuffledClass1Questions = shuffleArray(class1Questions).slice(0, 5); // 5 questions from class 1
+      const shuffledClass2Questions = shuffleArray(class2Questions).slice(0, 5); // 5 questions from class 2
 
       // Concatenate class 1 and class 2 questions
-      const orderedQuestions = [...class1Questions, ...class2Questions];
+      const orderedQuestions = [...shuffledClass1Questions, ...shuffledClass2Questions];
 
       setQuestions(orderedQuestions);
     };
