@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { Share2, RotateCcw } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { useLanguage } from '../../../hooks/useLanguage' // 言語を取得するためのフック
+import { useLanguage } from '../../hooks/useLanguage' // 言語を取得するためのフック
 
 // Define the type for affiliate link items
 type AffiliateLink = {
