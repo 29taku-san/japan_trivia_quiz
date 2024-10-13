@@ -6,14 +6,12 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { setCookie } from 'cookies-next'
 
+// 対象言語を6つに絞り込む
 const languages = [
   { code: 'ja', name: 'Japanese', nativeName: '日本語' },
   { code: 'en', name: 'English', nativeName: 'English' },
   { code: 'zh-Hans', name: 'Chinese (Simplified)', nativeName: '简体中文' },
   { code: 'zh-Hant', name: 'Chinese (Traditional)', nativeName: '繁體中文' },
-  { code: 'es', name: 'Spanish', nativeName: 'Español' },
-  { code: 'fr', name: 'French', nativeName: 'Français' },
-  { code: 'it', name: 'Italian', nativeName: 'Italiano' },
   { code: 'ko', name: 'Korean', nativeName: '한국어' },
   { code: 'th', name: 'Thai', nativeName: 'ไทย' },
 ]
