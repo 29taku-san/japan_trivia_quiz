@@ -22,9 +22,17 @@ type Question = {
 
 // 質問データを動的に読み込む
 const fetchQuestions = async (): Promise<Question[]> => {
-  const response = await fetch('/data/questions.json');
-  const data = await response.json();
-  return data;
+  try {
+    const response = await fetch('/data/questions.json');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch questions: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching questions:", error);
+    return [];  // エラーが発生した場合、空の配列を返す
+  }
 };
 
 // 配列をシャッフルする関数（Fisher-Yatesアルゴリズム）
@@ -55,21 +63,37 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
 
   useEffect(() => {
     const loadQuestions = async () => {
-      const allQuestions = await fetchQuestions();
-      const [firstClass, secondClass] = difficultyClassMap[params.difficulty];
+      try {
+        const allQuestions = await fetchQuestions();
+        const [firstClass, secondClass] = difficultyClassMap[params.difficulty];
 
-      // クラスレベルと言語で質問をフィルタリング
-      const class1Questions = allQuestions.filter((q: Question) => q.class_level === firstClass && q.language_code === lang);
-      const class2Questions = allQuestions.filter((q: Question) => q.class_level === secondClass && q.language_code === lang);
+        // クラスレベルと言語で質問をフィルタリング
+        const class1Questions = allQuestions.filter((q: Question) => q.class_level === firstClass && q.language_code === lang);
+        const class2Questions = allQuestions.filter((q: Question) => q.class_level === secondClass && q.language_code === lang);
 
-      // 質問をシャッフル
-      const shuffledClass1Questions = shuffleArray(class1Questions).slice(0, 5); // クラス1から5問
-      const shuffledClass2Questions = shuffleArray(class2Questions).slice(0, 5); // クラス2から5問
+        // ログ出力：フィルタリング後の質問データを確認
+        console.log('Filtered Class 1 Questions:', class1Questions);
+        console.log('Filtered Class 2 Questions:', class2Questions);
 
-      // クラス1とクラス2の質問を連結
-      const orderedQuestions = [...shuffledClass1Questions, ...shuffledClass2Questions];
+        if (class1Questions.length === 0 && class2Questions.length === 0) {
+          throw new Error("No questions found for the selected language and difficulty.");
+        }
 
-      setQuestions(orderedQuestions);
+        // 質問をシャッフル
+        const shuffledClass1Questions = shuffleArray(class1Questions).slice(0, 5); // クラス1から5問
+        const shuffledClass2Questions = shuffleArray(class2Questions).slice(0, 5); // クラス2から5問
+
+        // クラス1とクラス2の質問を連結
+        const orderedQuestions = [...shuffledClass1Questions, ...shuffledClass2Questions];
+
+        // ログ出力：シャッフル後の質問データを確認
+        console.log('Shuffled and Ordered Questions:', orderedQuestions);
+
+        setQuestions(orderedQuestions);
+      } catch (error) {
+        console.error("Error loading questions:", error);
+        setQuestions([]);  // エラーが発生した場合でもquestionsを空に設定
+      }
     };
     loadQuestions();
   }, [params.difficulty, lang]);
