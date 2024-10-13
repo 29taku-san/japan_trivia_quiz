@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { useLanguage } from '../../../hooks/useLanguage';
 
-// Question type definition
+// 问题类型定义
 type Question = {
   class_level: number;
   language_code: string;
@@ -20,14 +20,14 @@ type Question = {
   explanation: string;
 };
 
-// Load the questions JSON dynamically
+// 动态加载问题 JSON
 const fetchQuestions = async (): Promise<Question[]> => {
   const response = await fetch('/data/questions.json');
   const data = await response.json();
   return data;
 };
 
-// Function to shuffle an array (Fisher-Yates shuffle)
+// 用于随机打乱数组的函数 (Fisher-Yates shuffle)
 const shuffleArray = <T,>(array: T[]): T[] => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -36,7 +36,7 @@ const shuffleArray = <T,>(array: T[]): T[] => {
   return array;
 };
 
-// Map difficulty levels to class levels
+// 难度级别与班级级别的映射
 const difficultyClassMap: { [key: string]: [number, number] } = {
   beginner: [1, 2],
   intermediate: [2, 3],
@@ -51,22 +51,22 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [score, setScore] = useState(0);
   const router = useRouter();
-  const lang = useLanguage();  // Get the currently selected language
+  const lang = useLanguage();  // 获取当前选择的语言
 
   useEffect(() => {
     const loadQuestions = async () => {
       const allQuestions = await fetchQuestions();
       const [firstClass, secondClass] = difficultyClassMap[params.difficulty];
 
-      // Filter questions by class level and language
+      // 根据班级级别和语言筛选问题
       const class1Questions = allQuestions.filter((q: Question) => q.class_level === firstClass && q.language_code === lang);
       const class2Questions = allQuestions.filter((q: Question) => q.class_level === secondClass && q.language_code === lang);
 
-      // Shuffle the questions
-      const shuffledClass1Questions = shuffleArray(class1Questions).slice(0, 5); // 5 questions from class 1
-      const shuffledClass2Questions = shuffleArray(class2Questions).slice(0, 5); // 5 questions from class 2
+      // 随机打乱问题
+      const shuffledClass1Questions = shuffleArray(class1Questions).slice(0, 5); // 从班级1选择5个问题
+      const shuffledClass2Questions = shuffleArray(class2Questions).slice(0, 5); // 从班级2选择5个问题
 
-      // Concatenate class 1 and class 2 questions
+      // 合并班级1和班级2的问题
       const orderedQuestions = [...shuffledClass1Questions, ...shuffledClass2Questions];
 
       setQuestions(orderedQuestions);
@@ -90,7 +90,7 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
       setSelectedAnswer(null);
       setIsAnswerChecked(false);
     } else {
-      // Quiz finished - navigate to results page
+      // 完成测验 - 跳转到结果页面
       router.push(`/${lang}/result?score=${score}&total=${totalQuestions}`);
     }
   };
@@ -100,14 +100,14 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
   };
 
   if (questions.length === 0) {
-    return <p>Loading questions...</p>;
+    return <p>加载中...</p>;
   }
 
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-white text-black py-4 shadow-sm">
         <div className="container mx-auto px-4">
-          <h1 className="text-2xl font-bold text-center">Japan Trivia Quiz - {params.difficulty}</h1>
+          <h1 className="text-2xl font-bold text-center">日本小测验 - {params.difficulty}</h1>
         </div>
       </header>
 
@@ -116,8 +116,8 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
           <CardContent className="p-6">
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-semibold">Question {currentQuestionIndex + 1} of {totalQuestions}</h2>
-                <span className="text-sm text-gray-500">Score: {score}/{totalQuestions}</span>
+                <h2 className="text-lg font-semibold">问题 {currentQuestionIndex + 1} / {totalQuestions}</h2>
+                <span className="text-sm text-gray-500">分数: {score}/{totalQuestions}</span>
               </div>
               <Progress value={((currentQuestionIndex + 1) / totalQuestions) * 100} className="w-full" />
             </div>
@@ -126,15 +126,15 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
               <>
                 <h3 className="text-xl font-bold mb-4">{currentQuestion.text}</h3>
                 <RadioGroup 
-                  value={selectedAnswer || ''} // 選択された値を設定、null の場合は空文字列を設定
-                  onValueChange={onValueChange}  // 選択された値を変更する関数を呼び出し
+                  value={selectedAnswer || ''}  // 设置已选择的答案，null时设置为空字符串
+                  onValueChange={onValueChange}  // 当选择的答案更改时调用函数
                 >
                   {currentQuestion.options.map((option, index) => (
                     <div key={index} className="flex items-center space-x-2 mb-2">
                       <RadioGroupItem 
                         value={option} 
                         id={`option-${index}`} 
-                        selectedValue={selectedAnswer || ''} // null の場合は空文字列
+                        selectedValue={selectedAnswer || ''}  // null时设置为空字符串
                         onValueChange={onValueChange} 
                       />
                       <Label htmlFor={`option-${index}`} className="text-base cursor-pointer">
@@ -146,15 +146,15 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
               </>
             ) : (
               <>
-                <h3 className="text-xl font-bold mb-4">Explanation</h3>
+                <h3 className="text-xl font-bold mb-4">解释</h3>
                 <p className="mb-4">
                   {selectedAnswer === currentQuestion.correctAnswer 
-                    ? "Correct! " 
-                    : `Incorrect. The correct answer is ${currentQuestion.correctAnswer}. `}
+                    ? "正确!" 
+                    : `错误，正确答案是 ${currentQuestion.correctAnswer}. `}
                   {currentQuestion.explanation}
                 </p>
                 <div className="p-4 bg-blue-50 rounded-md">
-                  <h4 className="font-bold mb-2">Answer Breakdown:</h4>
+                  <h4 className="font-bold mb-2">答案分解:</h4>
                   {currentQuestion.options.map((option, index) => (
                     <p key={index} className={`mb-1 ${
                       option === currentQuestion.correctAnswer 
@@ -173,18 +173,18 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
           <CardFooter className="bg-gray-50 p-6">
             <div className="w-full flex justify-between items-center">
               <Link href={`/${lang}/difficulty`} passHref>
-                <Button variant="outline">Quit Quiz</Button>
+                <Button variant="outline">退出测验</Button>
               </Link>
               {!isAnswerChecked ? (
                 <Button 
                   onClick={handleCheckAnswer} 
-                  disabled={!selectedAnswer}  // 何も選択されていない場合はボタンを無効化
+                  disabled={!selectedAnswer}  // 如果没有选择答案则禁用按钮
                 >
-                  Check Answer
+                  检查答案
                 </Button>
               ) : (
                 <Button onClick={handleNextQuestion}>
-                  {currentQuestionIndex === totalQuestions - 1 ? "Finish Quiz" : "Next Question"}
+                  {currentQuestionIndex === totalQuestions - 1 ? "结束测验" : "下一个问题"}
                 </Button>
               )}
             </div>

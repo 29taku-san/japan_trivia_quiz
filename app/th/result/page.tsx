@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { Share2, RotateCcw } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { useLanguage } from '../../hooks/useLanguage' // 言語を取得するためのフック
+import { useLanguage } from '../../hooks/useLanguage' // ฟังก์ชันเพื่อดึงภาษาที่ใช้งานอยู่
 
 // Define the type for affiliate link items
 type AffiliateLink = {
@@ -36,12 +36,12 @@ const fetchAffiliateLinks = async (): Promise<AffiliateLink[]> => {
 
 export default function QuizResult() {
   const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([])
-  const lang = useLanguage(); // 現在の言語を取得
+  const lang = useLanguage(); // ดึงภาษาปัจจุบัน
 
   useEffect(() => {
     const loadAffiliateLinks = async () => {
       const links = await fetchAffiliateLinks()
-      // ランダムに3つのリンクを取得
+      // สุ่มลิงก์ 3 ลิงก์
       const shuffledLinks = links.sort(() => 0.5 - Math.random()).slice(0, 3)
       setAffiliateLinks(shuffledLinks)
     }
@@ -57,7 +57,7 @@ export default function QuizResult() {
       </header>
 
       <main className="flex-grow container mx-auto px-4 py-8">
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>กำลังโหลด...</div>}>
           <QuizResultContent affiliateLinks={affiliateLinks} handleShare={handleShare} lang={lang} />
         </Suspense>
       </main>
@@ -88,21 +88,21 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
   return (
     <Card className="max-w-2xl mx-auto">
       <CardContent className="p-6">
-        <h2 className="text-2xl font-bold mb-4 text-center">Quiz Results</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">ผลลัพธ์ของแบบทดสอบ</h2>
         <div className="mb-6">
           <Progress value={percentageValue} className="w-full h-4 mb-2" />
           <p className="text-center text-lg">
-            Your Score: <span className="font-bold">{score}</span> out of {total}
+            คะแนนของคุณ: <span className="font-bold">{score}</span> จาก {total}
           </p>
           <div className="flex justify-center mt-4 space-x-4">
             <Button variant="outline" size="sm" onClick={() => handleShare(score, total, lang)}>
               <Share2 className="w-4 h-4 mr-2" />
-              Share
+              แชร์
             </Button>
             <Link href={`/${lang}/difficulty`} passHref>
               <Button variant="outline" size="sm">
                 <RotateCcw className="w-4 h-4 mr-2" />
-                Retake Quiz
+                ทำแบบทดสอบอีกครั้ง
               </Button>
             </Link>
           </div>
@@ -114,7 +114,7 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
           <p>{result.message}</p>
         </div>
         <div className="mt-8">
-          <h3 className="text-xl font-semibold mb-4">Creator&apos;s Favorite Spots</h3>
+          <h3 className="text-xl font-semibold mb-4">สถานที่โปรดของผู้สร้างแบบทดสอบ</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {affiliateLinks.map((link, index) => (
               <a
@@ -141,10 +141,10 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
       <CardFooter className="bg-gray-50 p-6">
         <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4">
           <Link href={`/${lang}/difficulty`} passHref className="w-full sm:w-auto">
-            <Button variant="outline" className="w-full sm:w-auto">Choose Another Difficulty</Button>
+            <Button variant="outline" className="w-full sm:w-auto">เลือกความยากระดับอื่น</Button>
           </Link>
           <Link href={`/${lang}/home`} passHref className="w-full sm:w-auto">
-            <Button className="w-full sm:w-auto">Back to Home</Button>
+            <Button className="w-full sm:w-auto">กลับไปที่หน้าแรก</Button>
           </Link>
         </div>
       </CardFooter>
@@ -155,37 +155,37 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
 function getResultMessage(score: number) {
   if (score >= 8) {
     return {
-      title: "Congrats!",
-      message: "You're ready to enjoy Japan like a local!"
+      title: "ขอแสดงความยินดี!",
+      message: "คุณพร้อมที่จะเพลิดเพลินกับญี่ปุ่นในฐานะคนท้องถิ่นแล้ว!"
     }
   } else if (score >= 5 && score <= 7) {
     return {
-      title: "So close!",
-      message: "Just a little more to become a Japan master!"
+      title: "เกือบแล้ว!",
+      message: "อีกนิดเดียวคุณจะเป็นปรมาจารย์เรื่องญี่ปุ่น!"
     }
   } else {
     return {
-      title: "No worries!",
-      message: "Your next challenge will make you a Japan expert!"
+      title: "ไม่ต้องกังวล!",
+      message: "ท้าทายครั้งหน้าจะทำให้คุณเป็นผู้เชี่ยวชาญเรื่องญี่ปุ่น!"
     }
   }
 }
 
 async function handleShare(score: number, total: number, lang: string) {
   const shareData = {
-    title: "Japan Trivia Quiz Results",
-    text: `I just scored ${score}/${total} on the Japan Trivia Quiz! Test your knowledge at the quiz home page:`,
+    title: "ผลลัพธ์ของแบบทดสอบญี่ปุ่น",
+    text: `ฉันทำคะแนนได้ ${score}/${total} ในแบบทดสอบญี่ปุ่น! ลองท้าทายความรู้ของคุณดูสิ!`,
     url: window.location.origin + `/${lang}/home`,
   }
 
   try {
     if (navigator.share) {
       await navigator.share(shareData)
-      console.log("Shared successfully!")
+      console.log("แชร์สำเร็จ!")
     } else {
-      alert("Sharing is not supported on this browser.")
+      alert("เบราว์เซอร์นี้ไม่รองรับการแชร์")
     }
   } catch (err) {
-    console.error("Error sharing:", err)
+    console.error("เกิดข้อผิดพลาดในการแชร์:", err)
   }
 }

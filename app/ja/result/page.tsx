@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useLanguage } from '../../hooks/useLanguage' // 言語を取得するためのフック
 
-// Define the type for affiliate link items
+// アフィリエイトリンク項目の型を定義
 type AffiliateLink = {
   url: string;
   image: string;
@@ -19,12 +19,12 @@ type AffiliateLink = {
   description: string;
 };
 
-// Load the affiliate links JSON dynamically
+// アフィリエイトリンクのJSONを動的に読み込む
 const fetchAffiliateLinks = async (): Promise<AffiliateLink[]> => {
   try {
     const response = await fetch('/data/affiliateLinks.json')
     if (!response.ok) {
-      throw new Error('Failed to fetch affiliate links');
+      throw new Error('アフィリエイトリンクの取得に失敗しました');
     }
     const data: AffiliateLink[] = await response.json()
     return data
@@ -52,12 +52,12 @@ export default function QuizResult() {
     <div className="min-h-screen flex flex-col">
       <header className="bg-white text-black py-4 shadow-sm">
         <div className="container mx-auto px-4">
-          <h1 className="text-2xl font-bold text-center">Japan Trivia Quiz</h1>
+          <h1 className="text-2xl font-bold text-center">日本クイズ</h1>
         </div>
       </header>
 
       <main className="flex-grow container mx-auto px-4 py-8">
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>読み込み中...</div>}>
           <QuizResultContent affiliateLinks={affiliateLinks} handleShare={handleShare} lang={lang} />
         </Suspense>
       </main>
@@ -88,21 +88,21 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
   return (
     <Card className="max-w-2xl mx-auto">
       <CardContent className="p-6">
-        <h2 className="text-2xl font-bold mb-4 text-center">Quiz Results</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">クイズ結果</h2>
         <div className="mb-6">
           <Progress value={percentageValue} className="w-full h-4 mb-2" />
           <p className="text-center text-lg">
-            Your Score: <span className="font-bold">{score}</span> out of {total}
+            あなたのスコア: <span className="font-bold">{score}</span> / {total}
           </p>
           <div className="flex justify-center mt-4 space-x-4">
             <Button variant="outline" size="sm" onClick={() => handleShare(score, total, lang)}>
               <Share2 className="w-4 h-4 mr-2" />
-              Share
+              シェア
             </Button>
             <Link href={`/${lang}/difficulty`} passHref>
               <Button variant="outline" size="sm">
                 <RotateCcw className="w-4 h-4 mr-2" />
-                Retake Quiz
+                クイズを再受験する
               </Button>
             </Link>
           </div>
@@ -114,7 +114,7 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
           <p>{result.message}</p>
         </div>
         <div className="mt-8">
-          <h3 className="text-xl font-semibold mb-4">Creator&apos;s Favorite Spots</h3>
+          <h3 className="text-xl font-semibold mb-4">クイズクリエイターのお気に入りスポット</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {affiliateLinks.map((link, index) => (
               <a
@@ -141,10 +141,10 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
       <CardFooter className="bg-gray-50 p-6">
         <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4">
           <Link href={`/${lang}/difficulty`} passHref className="w-full sm:w-auto">
-            <Button variant="outline" className="w-full sm:w-auto">Choose Another Difficulty</Button>
+            <Button variant="outline" className="w-full sm:w-auto">他の難易度を選ぶ</Button>
           </Link>
           <Link href={`/${lang}/home`} passHref className="w-full sm:w-auto">
-            <Button className="w-full sm:w-auto">Back to Home</Button>
+            <Button className="w-full sm:w-auto">ホームに戻る</Button>
           </Link>
         </div>
       </CardFooter>
@@ -155,37 +155,37 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
 function getResultMessage(score: number) {
   if (score >= 8) {
     return {
-      title: "Congrats!",
-      message: "You're ready to enjoy Japan like a local!"
+      title: "おめでとう！",
+      message: "日本を地元のように楽しむ準備ができています！"
     }
   } else if (score >= 5 && score <= 7) {
     return {
-      title: "So close!",
-      message: "Just a little more to become a Japan master!"
+      title: "もう少し！",
+      message: "あと少しで日本の達人になれます！"
     }
   } else {
     return {
-      title: "No worries!",
-      message: "Your next challenge will make you a Japan expert!"
+      title: "心配しないで！",
+      message: "次のチャレンジで日本の専門家になれます！"
     }
   }
 }
 
 async function handleShare(score: number, total: number, lang: string) {
   const shareData = {
-    title: "Japan Trivia Quiz Results",
-    text: `I just scored ${score}/${total} on the Japan Trivia Quiz! Test your knowledge at the quiz home page:`,
+    title: "日本クイズ結果",
+    text: `私は日本クイズで ${score}/${total} 点を取りました！ あなたも挑戦してみてください！`,
     url: window.location.origin + `/${lang}/home`,
   }
 
   try {
     if (navigator.share) {
       await navigator.share(shareData)
-      console.log("Shared successfully!")
+      console.log("共有に成功しました！")
     } else {
-      alert("Sharing is not supported on this browser.")
+      alert("このブラウザでは共有がサポートされていません。")
     }
   } catch (err) {
-    console.error("Error sharing:", err)
+    console.error("共有中にエラーが発生しました:", err)
   }
 }

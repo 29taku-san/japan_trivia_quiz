@@ -9,9 +9,9 @@ import { Progress } from "@/components/ui/progress"
 import { Share2, RotateCcw } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { useLanguage } from '../../hooks/useLanguage' // 言語を取得するためのフック
+import { useLanguage } from '../../hooks/useLanguage' // 用來獲取當前語言的鉤子
 
-// Define the type for affiliate link items
+// 定義聯盟鏈接項目的類型
 type AffiliateLink = {
   url: string;
   image: string;
@@ -19,12 +19,12 @@ type AffiliateLink = {
   description: string;
 };
 
-// Load the affiliate links JSON dynamically
+// 動態加載聯盟鏈接的 JSON
 const fetchAffiliateLinks = async (): Promise<AffiliateLink[]> => {
   try {
     const response = await fetch('/data/affiliateLinks.json')
     if (!response.ok) {
-      throw new Error('Failed to fetch affiliate links');
+      throw new Error('無法獲取聯盟鏈接');
     }
     const data: AffiliateLink[] = await response.json()
     return data
@@ -36,12 +36,12 @@ const fetchAffiliateLinks = async (): Promise<AffiliateLink[]> => {
 
 export default function QuizResult() {
   const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([])
-  const lang = useLanguage(); // 現在の言語を取得
+  const lang = useLanguage(); // 獲取當前語言
 
   useEffect(() => {
     const loadAffiliateLinks = async () => {
       const links = await fetchAffiliateLinks()
-      // ランダムに3つのリンクを取得
+      // 隨機獲取 3 個鏈接
       const shuffledLinks = links.sort(() => 0.5 - Math.random()).slice(0, 3)
       setAffiliateLinks(shuffledLinks)
     }
@@ -57,7 +57,7 @@ export default function QuizResult() {
       </header>
 
       <main className="flex-grow container mx-auto px-4 py-8">
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>載入中...</div>}>
           <QuizResultContent affiliateLinks={affiliateLinks} handleShare={handleShare} lang={lang} />
         </Suspense>
       </main>
@@ -88,21 +88,21 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
   return (
     <Card className="max-w-2xl mx-auto">
       <CardContent className="p-6">
-        <h2 className="text-2xl font-bold mb-4 text-center">Quiz Results</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">測驗結果</h2>
         <div className="mb-6">
           <Progress value={percentageValue} className="w-full h-4 mb-2" />
           <p className="text-center text-lg">
-            Your Score: <span className="font-bold">{score}</span> out of {total}
+            你的分數: <span className="font-bold">{score}</span> / {total}
           </p>
           <div className="flex justify-center mt-4 space-x-4">
             <Button variant="outline" size="sm" onClick={() => handleShare(score, total, lang)}>
               <Share2 className="w-4 h-4 mr-2" />
-              Share
+              分享
             </Button>
             <Link href={`/${lang}/difficulty`} passHref>
               <Button variant="outline" size="sm">
                 <RotateCcw className="w-4 h-4 mr-2" />
-                Retake Quiz
+                重做測驗
               </Button>
             </Link>
           </div>
@@ -114,7 +114,7 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
           <p>{result.message}</p>
         </div>
         <div className="mt-8">
-          <h3 className="text-xl font-semibold mb-4">Creator&apos;s Favorite Spots</h3>
+          <h3 className="text-xl font-semibold mb-4">測驗創作者的最愛地點</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {affiliateLinks.map((link, index) => (
               <a
@@ -141,10 +141,10 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
       <CardFooter className="bg-gray-50 p-6">
         <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4">
           <Link href={`/${lang}/difficulty`} passHref className="w-full sm:w-auto">
-            <Button variant="outline" className="w-full sm:w-auto">Choose Another Difficulty</Button>
+            <Button variant="outline" className="w-full sm:w-auto">選擇其他難度</Button>
           </Link>
           <Link href={`/${lang}/home`} passHref className="w-full sm:w-auto">
-            <Button className="w-full sm:w-auto">Back to Home</Button>
+            <Button className="w-full sm:w-auto">返回首頁</Button>
           </Link>
         </div>
       </CardFooter>
@@ -155,37 +155,37 @@ function QuizResultContent({ affiliateLinks, handleShare, lang }: QuizResultCont
 function getResultMessage(score: number) {
   if (score >= 8) {
     return {
-      title: "Congrats!",
-      message: "You're ready to enjoy Japan like a local!"
+      title: "恭喜!",
+      message: "你已經準備好像當地人一樣享受日本了！"
     }
   } else if (score >= 5 && score <= 7) {
     return {
-      title: "So close!",
-      message: "Just a little more to become a Japan master!"
+      title: "差一點就成功了!",
+      message: "再多學習一點，你就能成為日本專家了！"
     }
   } else {
     return {
-      title: "No worries!",
-      message: "Your next challenge will make you a Japan expert!"
+      title: "不用擔心!",
+      message: "下次挑戰會讓你成為日本專家！"
     }
   }
 }
 
 async function handleShare(score: number, total: number, lang: string) {
   const shareData = {
-    title: "Japan Trivia Quiz Results",
-    text: `I just scored ${score}/${total} on the Japan Trivia Quiz! Test your knowledge at the quiz home page:`,
+    title: "日本知識問答結果",
+    text: `我在日本知識問答中得到了 ${score}/${total} 的分數！快來挑戰你的知識吧！`,
     url: window.location.origin + `/${lang}/home`,
   }
 
   try {
     if (navigator.share) {
       await navigator.share(shareData)
-      console.log("Shared successfully!")
+      console.log("分享成功！")
     } else {
-      alert("Sharing is not supported on this browser.")
+      alert("此瀏覽器不支持分享功能")
     }
   } catch (err) {
-    console.error("Error sharing:", err)
+    console.error("分享時出錯:", err)
   }
 }
