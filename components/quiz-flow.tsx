@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { useLanguage } from '../app/hooks/useLanguage'; // 修正済み
+import { useLanguage } from '../app/hooks/useLanguage'; // 言語取得用のフック
 
-// Questionの型を定義
+// Question型を定義
 interface Question {
   text: string;
   options: string[];
@@ -20,14 +20,14 @@ interface Question {
   language_code: string;
 }
 
-// Load the questions JSON dynamically
+// クイズのJSONデータを動的に取得
 async function fetchQuestions(): Promise<Question[]> {
   const response = await fetch('/data/questions.json');
   const data = await response.json();
   return data as Question[];
 }
 
-// Function to shuffle an array (Fisher-Yates shuffle)
+// 配列をシャッフルする関数 (Fisher-Yates shuffle)
 function shuffleArray<T>(array: T[]): T[] {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -36,7 +36,7 @@ function shuffleArray<T>(array: T[]): T[] {
   return array;
 }
 
-// 難易度に対応するクラスのマッピング
+// 難易度と対応するクラスレベルのマッピング
 const difficultyClassMap: { [key: string]: [number, number] } = {
   beginner: [1, 2],
   intermediate: [2, 3],
@@ -51,25 +51,28 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [score, setScore] = useState(0);
   const router = useRouter();
-  const lang = useLanguage();
+  const lang = useLanguage(); // 現在の言語を取得
 
   useEffect(() => {
     const loadQuestions = async () => {
       const allQuestions = await fetchQuestions();
       const [firstClass, secondClass] = difficultyClassMap[params.difficulty as keyof typeof difficultyClassMap];
 
-      // Filter questions based on class levels and language code
-      const filteredQuestions = allQuestions.filter(q => 
+      // ログ: 言語が正しく設定されているか確認
+      console.log('Selected Language:', lang);
+
+      // クラスレベルと言語コードに基づいて問題をフィルタリング
+      const filteredQuestions = allQuestions.filter(q =>
         (q.class_level === firstClass || q.class_level === secondClass) && q.language_code === lang
       );
 
-      // ログ出力：フィルタリング後の問題セットを確認
+      // ログ: フィルタリング後の問題を確認
       console.log('Filtered Questions:', filteredQuestions);
 
-      // Shuffle the filtered questions and take 10 questions
+      // フィルタされた問題をシャッフルして10問抽出
       const shuffledQuestions = shuffleArray(filteredQuestions).slice(0, 10);
 
-      // ログ出力：シャッフル後の問題セットを確認
+      // ログ: シャッフル後の問題を確認
       console.log('Shuffled Questions:', shuffledQuestions);
 
       setQuestions(shuffledQuestions);
@@ -93,7 +96,7 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
       setSelectedAnswer(null);
       setIsAnswerChecked(false);
     } else {
-      // Quiz finished - navigate to results page
+      // クイズ終了 - 結果画面へ遷移
       router.push(`/${lang}/result?score=${score}&total=${totalQuestions}`);
     }
   };
@@ -103,7 +106,7 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
   };
 
   if (questions.length === 0) {
-    return <p>Loading questions...</p>;
+    return <p>ローディング中...</p>;
   }
 
   return (
@@ -128,16 +131,16 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
             {!isAnswerChecked ? (
               <>
                 <h3 className="text-xl font-bold mb-4">{currentQuestion.text}</h3>
-                <RadioGroup 
+                <RadioGroup
                   value={selectedAnswer || ''} // 選択された値を設定
                   onValueChange={onValueChange}  // 選択された値を変更する関数を呼び出し
                 >
                   {currentQuestion.options.map((option: string, index: number) => (
                     <div key={index} className="flex items-center space-x-2 mb-2">
-                      <RadioGroupItem 
-                        value={option} 
-                        id={`option-${index}`} 
-                        onValueChange={onValueChange} 
+                      <RadioGroupItem
+                        value={option}
+                        id={`option-${index}`}
+                        onValueChange={onValueChange}
                         selectedValue={selectedAnswer || ''} // nullを空文字列に変換
                       />
                       <Label htmlFor={`option-${index}`} className="text-base cursor-pointer">
@@ -151,8 +154,8 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
               <>
                 <h3 className="text-xl font-bold mb-4">Explanation</h3>
                 <p className="mb-4">
-                  {selectedAnswer === currentQuestion.correctAnswer 
-                    ? "Correct! " 
+                  {selectedAnswer === currentQuestion.correctAnswer
+                    ? "Correct! "
                     : `Incorrect. The correct answer is ${currentQuestion.correctAnswer}. `}
                   {currentQuestion.explanation}
                 </p>
@@ -160,10 +163,10 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
                   <h4 className="font-bold mb-2">Answer Breakdown:</h4>
                   {currentQuestion.options.map((option: string, index: number) => (
                     <p key={index} className={`mb-1 ${
-                      option === currentQuestion.correctAnswer 
-                        ? 'text-green-600 font-bold' 
-                        : selectedAnswer === option 
-                          ? 'text-red-600 line-through' 
+                      option === currentQuestion.correctAnswer
+                        ? 'text-green-600 font-bold'
+                        : selectedAnswer === option
+                          ? 'text-red-600 line-through'
                           : ''
                     }`}>
                       {option}
@@ -179,8 +182,8 @@ export default function QuizFlow({ params }: { params: { difficulty: string } })
                 <Button variant="outline">Quit Quiz</Button>
               </Link>
               {!isAnswerChecked ? (
-                <Button 
-                  onClick={handleCheckAnswer} 
+                <Button
+                  onClick={handleCheckAnswer}
                   disabled={!selectedAnswer}
                 >
                   Check Answer
