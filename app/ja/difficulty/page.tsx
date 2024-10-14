@@ -5,28 +5,31 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from '../../hooks/useLanguage';
 
-
 export default function DifficultySelection() {
   const lang = useLanguage()
 
   const difficulties = [
     { 
       name: "初級", 
+      url: "beginner",  // URLに英語の難易度名を使用
       description: "初めての日本旅行なら、ここから始めてみよう！", 
       color: "bg-green-100 hover:bg-green-200" 
     },
     { 
       name: "中級", 
+      url: "intermediate",  // URLに英語の難易度名を使用
       description: "日本好きなリピーターなら、これくらいは知っていてほしい！", 
       color: "bg-yellow-100 hover:bg-yellow-200" 
     },
     { 
       name: "上級", 
+      url: "advanced",  // URLに英語の難易度名を使用
       description: "これに答えられたら、かなりの日本通です！", 
       color: "bg-orange-100 hover:bg-orange-200" 
     },
     { 
       name: "日本人級", 
+      url: "expert",  // URLに英語の難易度名を使用
       description: "日本人でも尊敬されるレベルです！", 
       color: "bg-red-100 hover:bg-red-200" 
     },
@@ -51,7 +54,7 @@ export default function DifficultySelection() {
                   <h3 className="text-xl font-bold mb-2">{difficulty.name}</h3>
                   <p className="text-sm mb-4">{difficulty.description}</p>
                 </div>
-                <Link href={`/${lang}/quiz/${difficulty.name.toLowerCase()}`} passHref>
+                <Link href={`/${lang}/quiz/${difficulty.url}`} passHref>
                   <Button variant="secondary" className="self-start">
                     {difficulty.name}クイズを始める
                   </Button>
