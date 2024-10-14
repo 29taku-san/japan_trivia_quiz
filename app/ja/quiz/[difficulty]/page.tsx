@@ -24,25 +24,12 @@ type Question = {
 const fetchQuestions = async (): Promise<Question[]> => {
   try {
     const response = await fetch('/data/questions.json');
-    
-    // 正常なレスポンスか確認
-    if (!response.ok) {
-      console.error("Failed to load questions:", response.statusText);
-      return []; // エラー時は空の配列を返す
-    }
-
     const data = await response.json();
-
-    // データが配列かどうかを確認
-    if (!Array.isArray(data)) {
-      console.error("Invalid data format: expected an array");
-      return []; // データ形式が不正な場合も空の配列を返す
-    }
-
+    console.log('Questions data:', data);  // データが正しく取得できているか確認
     return data;
   } catch (error) {
-    console.error("Error fetching questions:", error);
-    return []; // エラー発生時も空の配列を返す
+    console.error('Error fetching questions:', error);
+    return [];
   }
 };
 
@@ -75,15 +62,16 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
   useEffect(() => {
     const loadQuestions = async () => {
       const allQuestions = await fetchQuestions();
+      console.log('All Questions:', allQuestions); // 質問データ全体のログを出力
+
       const [firstClass, secondClass] = difficultyClassMap[params.difficulty];
 
       // クラスレベルと言語で質問をフィルタリング
-      const class1Questions = allQuestions.filter(q => q.class_level === firstClass && q.language_code === lang);
-      const class2Questions = allQuestions.filter(q => q.class_level === secondClass && q.language_code === lang);
+      const class1Questions = allQuestions.filter((q: Question) => q.class_level === firstClass && q.language_code === lang);
+      console.log('Class 1 Questions:', class1Questions); // クラス1の質問データのログを出力
 
-      // フィルタリング結果をログに出力
-      console.log('Class 1 Questions:', class1Questions);
-      console.log('Class 2 Questions:', class2Questions);
+      const class2Questions = allQuestions.filter((q: Question) => q.class_level === secondClass && q.language_code === lang);
+      console.log('Class 2 Questions:', class2Questions); // クラス2の質問データのログを出力
 
       // 質問をシャッフル
       const shuffledClass1Questions = shuffleArray(class1Questions).slice(0, 5); // クラス1から5問
@@ -91,8 +79,7 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
 
       // クラス1とクラス2の質問を連結
       const orderedQuestions = [...shuffledClass1Questions, ...shuffledClass2Questions];
-
-      console.log('Ordered Questions:', orderedQuestions); // 最終的な質問リストを確認
+      console.log('Ordered Questions:', orderedQuestions); // シャッフル後の質問データのログを出力
 
       setQuestions(orderedQuestions);
     };
