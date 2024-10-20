@@ -29,7 +29,7 @@ export default function DifficultySelection() {
     },
     { 
       name: "ระดับผู้เชี่ยวชาญ", 
-      url: "expert",  // URLに英語の難易度名を使用
+      url: "japanese",  // URLに英語の難易度名を使用
       description: "ระดับนี้แม้แต่คนญี่ปุ่นยังต้องยอมรับ!", 
       color: "bg-red-100 hover:bg-red-200" 
     },

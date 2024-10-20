@@ -26,7 +26,7 @@ export default function DifficultySelection() {
       color: "bg-orange-100 hover:bg-orange-200" 
     },
     { 
-      name: "Expert", 
+      name: "Japanese", 
       description: "This is a level even Japanese people will respect!", 
       color: "bg-red-100 hover:bg-red-200" 
     },

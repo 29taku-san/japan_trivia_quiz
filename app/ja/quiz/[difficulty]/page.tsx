@@ -64,6 +64,12 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
       const allQuestions = await fetchQuestions();
       console.log('All Questions:', allQuestions); // 質問データ全体のログを出力
 
+      // params.difficulty が difficultyClassMap に存在するか確認
+      if (!difficultyClassMap[params.difficulty]) {
+        console.error(`Invalid difficulty: ${params.difficulty}`);
+        return;
+      }
+
       const [firstClass, secondClass] = difficultyClassMap[params.difficulty];
 
       // クラスレベルと言語で質問をフィルタリング
@@ -203,6 +209,7 @@ export default function QuizFlow({ params }: { params: { difficulty: keyof typeo
           </CardFooter>
         </Card>
       </main>
+
 
       <footer className="bg-gray-100 py-4 mt-8">
         <div className="container mx-auto px-4 text-center text-sm text-gray-600">
